@@ -1,11 +1,11 @@
-const events = require('events');
-const fs = require('fs');
-const readline = require('readline');
+import { once } from 'events';
+import { createReadStream } from 'fs';
+import { createInterface } from 'readline';
 
 (async function processLineByLine() {
   try {
-    const rl = readline.createInterface({
-      input: fs.createReadStream('broad.sql'),
+    const rl = createInterface({
+      input: createReadStream('broad.sql'),
       crlfDelay: Infinity
     });
 
@@ -13,7 +13,7 @@ const readline = require('readline');
       console.log(`Line from file: ${line}`);
     });
 
-    await events.once(rl, 'close');
+    await once(rl, 'close');
 
     console.log('Reading file line by line with readline done.');
     const used = process.memoryUsage().heapUsed / 1024 / 1024;
