@@ -34,6 +34,7 @@ async function run() {
     if (error.isCanceled) {
       console.error('command canceled')
     } else {
+      
       console.error(error)
     }
   }
