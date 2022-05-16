@@ -2,10 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import git from 'isomorphic-git';
 import {request} from 'isomorphic-git/http/node/index.cjs';
-import { spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
 import { URL } from 'url';
 import shell from 'shelljs';
 import fsExtra from 'fs-extra';
+import NodeGit from 'nodegit';
 
 const http = {request};
 
@@ -38,7 +39,7 @@ function getGitRepo(url) {
   // git.clone({ fs, http, dir, url,onAuth }).then(console.log)
 }
 
-getGitRepo('http://192.168.10.6/xbongbong/xbb-pro-dingtalk-front.git')
+// getGitRepo('http://192.168.10.6/xbongbong/xbb-pro-dingtalk-front.git')
 
 // await git.pull({
 //   fs,
@@ -71,25 +72,59 @@ function getBranches(heads, prefix){
   })
   return result
 }
-function startScript(projectName){
-  shell.cd(projectName);
-  const installChild = shell.exec('npm install', {async:true});
-  installChild.stdout.on('data', function(data) {
-    /* ... do something with data ... */
-    console.log(data, 'data')
+function startScript(){
+  // shell.cd(projectName);
+  // const installChild = shell.exec('npm install', {async:true});
+  // installChild.stdout.on('data', function(data) {
+  //   /* ... do something with data ... */
+  //   console.log(data, 'data')
+  // });
+  //  installChild.stderr.on('data', (data) => {
+  //   console.error(data, '-------error-------');
+  // });
+  // installChild.on('exit', (code) => {
+  //   console.log(`exit ${code}`);
+  //   shell.exec('npm run build', function(code, stdout, stderr) {
+  //     console.log('Exit code:', code);
+  //     console.log('Program output:', stdout);
+  //     console.log('Program stderr:', stderr);
+  //   });
+  // });
+  const projectDir = path.join(process.cwd(), `test-clone`)
+  console.log(projectDir, 'projectDir');
+  // cd ${projectDir} && npm install
+  const ls = spawn(`cd ${projectDir} && npm install`, {
+    shell: true
   });
-   installChild.stderr.on('data', (data) => {
-    console.error(data, '-------error-------');
+  // ls.stderr.on('data', function(data){
+  //     console.log('Error msg from process 2: ' + data.toString());
+  // });
+  // console.log(ls, 'ls');
+  ls.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
   });
-  installChild.on('exit', (code) => {
-    console.log(`exit ${code}`);
-    shell.exec('npm run build', function(code, stdout, stderr) {
-      console.log('Exit code:', code);
-      console.log('Program output:', stdout);
-      console.log('Program stderr:', stderr);
-    });
+
+  ls.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
   });
+
+  ls.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+
+  // ls.on('close', function(code){
+  //   console.log('child exists with code: ' + code);
+  // });
+// exec(`cd ${projectDir} && npm install`, function(error, stdout, stderr){
+//     if(error) {
+//         console.error('error: ' + error);
+//         return;
+//     }
+//     console.log('stdout: ' + stdout);
+//     console.log('stderr: ' + typeof stderr);
+// });
 }
+// startScript()
 function copyFile(source, destination){
   fsExtra.copy(source, destination, function (err) {
     if (err){ 
@@ -106,12 +141,23 @@ function copyFile(source, destination){
 
 // copyFile(dir, destination) feature/team-members
 async function gitCheckout(dir, branch){
-  await git.checkout({
-    fs,
-    dir,
-    ref: branch
-  })
-  console.log('git checkout success')
+  console.log(dir, branch)
+  NodeGit.Repository.open(dir).then(function (repo) {
+  console.log(repo, 'repo')
+  repo.checkoutBranch(branch).then(function() {
+  // method complete
+  console.log('repo checkout complete')
+
+  });
+  // Inside of this function we have an open repo
+});
+  // await git.checkout({
+  //   fs,
+  //   dir,
+  //   ref: branch
+  // })
+  // console.log('git checkout success')
+
 }
-// const dir = path.join(process.cwd(), 'test-clone')
-// gitCheckout(dir, 'master')
+const dir = path.join(process.cwd(), 'test-clone')
+gitCheckout(dir, 'master')
