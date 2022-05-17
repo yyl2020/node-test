@@ -25,15 +25,21 @@ export const plays = {
 // 该团目前出演两种戏剧：悲剧（tragedy）和喜剧（comedy）。
 // 给客户发出账单时，剧团还会根据到场观众的数量给出“观众量积分”（volumeCredit）优惠，下次客户再请剧团表演时可以使用积分获得折扣
 export function statement(invoice, plays) {
-    return renderPlainText(invoice, plays)
+    const statementData = {};
+    statementData.customer = invoice.customer;
+    statementData.performances = invoice.performances.map(enrichPerformance);
+    statementData.totalAmount = totalAmount(statementData);
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+    return renderPlainText(statementData, plays)
 }
-function renderPlainText(invoice, plays){
-    let result = `Statement for ${invoice.customer}\n`;
-    for (let perf of invoice.performances) {
-        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
+function renderPlainText(data, plays){
+        console.log(data);
+    let result = `Statement for ${data.customer}\n`;
+    for (let perf of data.performances) {
+        result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
     }
-    result += `Amount owed is ${usd(totalAmount())}\n`;
-    result += `You earned ${totalVolumeCredits()} credits\n`;
+    result += `Amount owed is ${usd(data.totalAmount)}\n`;
+    result += `You earned ${data.totalVolumeCredits} credits\n`;
     return result;
 }
 // console.log( statement(invoice, plays))
@@ -43,10 +49,15 @@ function renderPlainText(invoice, plays){
 // 然后添加演出戏剧类型，对戏剧场次的计费方式、积分的计算方式都有影响
 // 需求的变化使重构变得必要，如果一段代码能正常工作，并且不会再被修改，那么完全可以不去重构它。能改进它当然很好
 
-
+function enrichPerformance(aPerformance) {
+    aPerformance.play = playFor(aPerformance);
+    aPerformance.amount = amountFor(aPerformance);
+    aPerformance.volumeCredits = volumeCreditsFor(aPerformance);
+    return aPerformance;
+}
 function amountFor(perf){
     let result = 0;
-    switch (playFor(perf).type) {
+    switch (perf.play.type) {
         case "tragedy":
             result = 40000;
             if (perf.audience > 30) {
@@ -71,7 +82,7 @@ function playFor(aPerformance){
 function volumeCreditsFor(perf){
     let volumeCredits = 0;
     volumeCredits += Math.max(perf.audience - 30, 0);
-    if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+    if ("comedy" === perf.play.type) volumeCredits += Math.floor(perf.audience / 5);
     return volumeCredits;
 }
 // 好的命名十分重要，但往往并非唾手可得。
@@ -85,17 +96,17 @@ function usd(number){
         }).format(number/100);
 }
 // 对于重构过程的性能问题，大多数情况下可以忽略它。如果重构引入了性能损耗，先完成重构，再做性能优化。
-function totalVolumeCredits() {
+function totalVolumeCredits(data) {
     let result = 0;
-    for (let perf of invoice.performances) {
-        result += volumeCreditsFor(perf);
+    for (let perf of data.performances) {
+        result += perf.volumeCredits
     }
     return result;
 }
-function totalAmount() {
+function totalAmount(data) {
     let result = 0;
-    for (let perf of invoice.performances) {
-        result += amountFor(perf);
+    for (let perf of data.performances) {
+        result += perf.amount
     }
     return result;
 }
