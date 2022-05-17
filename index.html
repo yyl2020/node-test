@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    /* input[value="a"] { background: url(https://example.com/?value=a); } */
+    input[value="a"] { background: url(https://example.com/?value=a); }
+    input[value="b"] { background: url(https://example.com/?value=b); }
     @font-face { font-family: x; src: url(https://example.com/?value=a), local(Impact); unicode-range: U+61; }
     @font-face { font-family: x; src: url(https://example.com/?value=b), local(Impact); unicode-range: U+62; }
     @font-face { font-family: x; src: url(https://example.com/?value=c), local(Impact); unicode-range: U+63; }
@@ -16,5 +17,26 @@
 </head>
 <body>
   <input type=text>
+  <script>
+    const arr1 = []
+    const t0 = window.performance.now();
+    for (let index = 0; index < 10000000; index++) {
+      arr1.push(index)
+    }
+    const t1 = window.performance.now();
+    console.log("循环执行了" + (t1 - t0) + "毫秒.")
+    const arr2 = []
+    function hello (index){
+      arr2.push(index)
+    }
+    const t2 = window.performance.now();
+    for (let index = 0; index < 10000000; index++) {
+      hello(index)
+    }
+    const t3 = window.performance.now();
+    console.log("hello函数执行了" + (t3 - t2) + "毫秒.")
+    
+
+  </script>
 </body>
 </html>
