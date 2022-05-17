@@ -34,14 +34,13 @@ export function statement(invoice, plays) {
             minimumFractionDigits: 2
         }).format;
     for (let perf of invoice.performances) {
-        const play = plays[perf.playID];
-        let thisAmount  = amountFor(perf, play)
+        let thisAmount  = amountFor(perf, playFor(perf))
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
         // add extra credit for every ten comedy attendees
-        if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+        if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
         // print line for this order
-        result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+        result += ` ${playFor(perf).name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
         totalAmount += thisAmount;
     }
     result += `Amount owed is ${format(totalAmount / 100)}\n`;
@@ -57,9 +56,9 @@ export function statement(invoice, plays) {
 // 需求的变化使重构变得必要，如果一段代码能正常工作，并且不会再被修改，那么完全可以不去重构它。能改进它当然很好
 
 
-function amountFor(perf, play){
+function amountFor(perf){
     let result = 0;
-    switch (play.type) {
+    switch (playFor(perf).type) {
         case "tragedy":
             result = 40000;
             if (perf.audience > 30) {
@@ -78,10 +77,9 @@ function amountFor(perf, play){
     }
     return result
 }
-
-
-
-
+function playFor(aPerformance){
+    return plays[aPerformance.playID];
+}
 
 
 
