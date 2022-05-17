@@ -25,12 +25,7 @@ export const plays = {
 // 该团目前出演两种戏剧：悲剧（tragedy）和喜剧（comedy）。
 // 给客户发出账单时，剧团还会根据到场观众的数量给出“观众量积分”（volumeCredit）优惠，下次客户再请剧团表演时可以使用积分获得折扣
 export function statement(invoice, plays) {
-    const statementData = {};
-    statementData.customer = invoice.customer;
-    statementData.performances = invoice.performances.map(enrichPerformance);
-    statementData.totalAmount = totalAmount(statementData);
-    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-    return renderPlainText(statementData, plays)
+    return renderPlainText(createStatementData(invoice, plays))
 }
 function renderPlainText(data, plays){
         console.log(data);
@@ -41,6 +36,14 @@ function renderPlainText(data, plays){
     result += `Amount owed is ${usd(data.totalAmount)}\n`;
     result += `You earned ${data.totalVolumeCredits} credits\n`;
     return result;
+}
+function createStatementData(invoice, plays) {
+    const statementData = {};
+    statementData.customer = invoice.customer;
+    statementData.performances = invoice.performances.map(enrichPerformance);
+    statementData.totalAmount = totalAmount(statementData);
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+    return statementData;
 }
 // console.log( statement(invoice, plays))
 
