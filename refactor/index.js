@@ -30,10 +30,10 @@ export function statement(invoice, plays) {
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
         volumeCredits += volumeCreditsFor(perf);
-        result += ` ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
+        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
     }
-    result += `Amount owed is ${format(totalAmount / 100)}\n`;
+    result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
 
@@ -76,13 +76,15 @@ function volumeCreditsFor(perf){
     if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
     return volumeCredits;
 }
-
-function format(number){
+// 好的命名十分重要，但往往并非唾手可得。
+// 只有恰如其分地命名，才能彰显出将大函数分解成小函数的价值。
+// 用当前想到最好的，如果过段时间想到更好的了那就替换掉
+function usd(number){
     return new Intl.NumberFormat("en-US",
         {
             style: "currency", currency: "USD",
             minimumFractionDigits: 2
-        }).format;
+        }).format(number/100);
 }
 
 
