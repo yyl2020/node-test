@@ -37,6 +37,29 @@ function renderPlainText(data, plays){
     result += `You earned ${data.totalVolumeCredits} credits\n`;
     return result;
 }
+
+function htmlStatement(invoice, plays){
+    return renderHtml(createStatementData(invoice, plays));
+}
+function renderHtml(data){
+    let result = `<h1>Statement for ${data.customer}</h1>\n`;
+    result += "<table>\n";
+    result += "<tr><th>play</th><th>seats</th><th>cost</th></tr>";
+    for (let perf of data.performances) {
+    result += ` <tr><td>${perf.play.name}</td><td>${perf.audience}</td>`;
+    result += `<td>${usd(perf.amount)}</td></tr>\n`;
+    }
+    result += "</table>\n";
+    result += `<p>Amount owed is <em>${usd(data.totalAmount)}</em></p>\n`;
+    result += `<p>You earned <em>${data.totalVolumeCredits}</em> credits</p>\n`;
+    return result;
+}
+// console.log( statement(invoice, plays))
+console.log( htmlStatement(invoice, plays))
+// 需求修改：
+// 首先，PM希望以HTML格式输出对账单
+// 然后添加演出戏剧类型，对戏剧场次的计费方式、积分的计算方式都有影响
+// 需求的变化使重构变得必要，如果一段代码能正常工作，并且不会再被修改，那么完全可以不去重构它。能改进它当然很好
 function createStatementData(invoice, plays) {
     const statementData = {};
     statementData.customer = invoice.customer;
@@ -45,13 +68,6 @@ function createStatementData(invoice, plays) {
     statementData.totalVolumeCredits = totalVolumeCredits(statementData);
     return statementData;
 }
-// console.log( statement(invoice, plays))
-
-// 需求修改：
-// 首先，PM希望以HTML格式输出详单
-// 然后添加演出戏剧类型，对戏剧场次的计费方式、积分的计算方式都有影响
-// 需求的变化使重构变得必要，如果一段代码能正常工作，并且不会再被修改，那么完全可以不去重构它。能改进它当然很好
-
 function enrichPerformance(aPerformance) {
     aPerformance.play = playFor(aPerformance);
     aPerformance.amount = amountFor(aPerformance);
