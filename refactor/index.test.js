@@ -69,3 +69,14 @@ describe('no producers', function() {
 // 不要因为测试无法捕捉所有的bug就不写测试，因为测试的确可以捕捉到大多数bug
 // 与编程的许多方面类似，测试也是一种迭代式的活动。除非你技能非常纯熟，或者非常幸运，否则你很难第一次就把测试写对。
 
+describe('statement',function(){
+  it('result', function() {
+    expect(statement(invoice, plays)).equal(`Statement for BigCo
+ Hamlet: $650.00 (55 seats)
+ As You Like It: $580.00 (35 seats)
+ Othello: $500.00 (40 seats)
+Amount owed is $1,730.00
+You earned 47 credits
+`);
+  });
+})
