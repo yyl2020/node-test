@@ -28,11 +28,6 @@ export function statement(invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat("en-US",
-        {
-            style: "currency", currency: "USD",
-            minimumFractionDigits: 2
-        }).format;
     for (let perf of invoice.performances) {
         volumeCredits += volumeCreditsFor(perf);
         result += ` ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
@@ -82,7 +77,13 @@ function volumeCreditsFor(perf){
     return volumeCredits;
 }
 
-
+function format(number){
+    return new Intl.NumberFormat("en-US",
+        {
+            style: "currency", currency: "USD",
+            minimumFractionDigits: 2
+        }).format;
+}
 
 
 
