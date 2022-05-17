@@ -24,7 +24,10 @@ export const plays = {
 // 剧团则根据观众（audience）人数及剧目类型来向客户收费。
 // 该团目前出演两种戏剧：悲剧（tragedy）和喜剧（comedy）。
 // 给客户发出账单时，剧团还会根据到场观众的数量给出“观众量积分”（volumeCredit）优惠，下次客户再请剧团表演时可以使用积分获得折扣
-export function statement(invoice) {
+export function statement(invoice, plays) {
+    return renderPlainText(invoice, plays)
+}
+function renderPlainText(invoice, plays){
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
@@ -32,7 +35,6 @@ export function statement(invoice) {
     result += `Amount owed is ${usd(totalAmount())}\n`;
     result += `You earned ${totalVolumeCredits()} credits\n`;
     return result;
-
 }
 // console.log( statement(invoice, plays))
 
