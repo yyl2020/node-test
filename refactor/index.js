@@ -1,3 +1,5 @@
+import createStatementData from "./createStatementData";
+
 export const invoice = {
     customer: "BigCo",
     performances: [
@@ -28,7 +30,6 @@ export function statement(invoice, plays) {
     return renderPlainText(createStatementData(invoice, plays))
 }
 function renderPlainText(data, plays){
-        console.log(data);
     let result = `Statement for ${data.customer}\n`;
     for (let perf of data.performances) {
         result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
@@ -56,54 +57,9 @@ function renderHtml(data){
 }
 // console.log( statement(invoice, plays))
 console.log( htmlStatement(invoice, plays))
-// 需求修改：
-// 首先，PM希望以HTML格式输出对账单
-// 然后添加演出戏剧类型，对戏剧场次的计费方式、积分的计算方式都有影响
-// 需求的变化使重构变得必要，如果一段代码能正常工作，并且不会再被修改，那么完全可以不去重构它。能改进它当然很好
-function createStatementData(invoice, plays) {
-    const statementData = {};
-    statementData.customer = invoice.customer;
-    statementData.performances = invoice.performances.map(enrichPerformance);
-    statementData.totalAmount = totalAmount(statementData);
-    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-    return statementData;
-}
-function enrichPerformance(aPerformance) {
-    aPerformance.play = playFor(aPerformance);
-    aPerformance.amount = amountFor(aPerformance);
-    aPerformance.volumeCredits = volumeCreditsFor(aPerformance);
-    return aPerformance;
-}
-function amountFor(perf){
-    let result = 0;
-    switch (perf.play.type) {
-        case "tragedy":
-            result = 40000;
-            if (perf.audience > 30) {
-                result += 1000 * (perf.audience - 30);
-            }
-            break;
-        case "comedy":
-            result = 30000;
-            if (perf.audience > 20) {
-                result += 10000 + 500 * (perf.audience - 20);
-            }
-            result += 300 * perf.audience;
-            break;
-        default:
-            throw new Error(`unknown type: ${play.type}`);
-    }
-    return result
-}
-function playFor(aPerformance){
-    return plays[aPerformance.playID];
-}
-function volumeCreditsFor(perf){
-    let volumeCredits = 0;
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    if ("comedy" === perf.play.type) volumeCredits += Math.floor(perf.audience / 5);
-    return volumeCredits;
-}
+
+
+
 // 好的命名十分重要，但往往并非唾手可得。
 // 只有恰如其分地命名，才能彰显出将大函数分解成小函数的价值。
 // 用当前想到最好的，如果过段时间想到更好的了那就替换掉
@@ -114,24 +70,6 @@ function usd(number){
             minimumFractionDigits: 2
         }).format(number/100);
 }
-// 对于重构过程的性能问题，大多数情况下可以忽略它。如果重构引入了性能损耗，先完成重构，再做性能优化。
-function totalVolumeCredits(data) {
-    let result = 0;
-    for (let perf of data.performances) {
-        result += perf.volumeCredits
-    }
-    return result;
-}
-function totalAmount(data) {
-    let result = 0;
-    for (let perf of data.performances) {
-        result += perf.amount
-    }
-    return result;
-}
-
-
-
 
 
 
