@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+    <form>
+        <fieldset>
+            <legend>Tweak Light/Dark Mode Preferences</legend>
+            <label for="os">Operating System</label>
+            <select name="os" id="os">
+                <option value="light">Light Mode</option>
+                <option value="dark">Dark Mode</option>
+            </select>
+            <label for="browser">Browser (All Sites)</label>
+            <select name="browser" id="browser">
+                <option value="inherit">Inherit</option>
+                <option value="light">Light Mode</option>
+                <option value="dark">Dark Mode</option>
+            </select>
+            <label for="website">Current Website</label>
+            <select name="website" id="website">
+                <option value="inherit">Inherit</option>
+                <option value="light">Light Mode</option>
+                <option value="dark">Dark Mode</option>
+            </select>
+        </fieldset>
+    </form>
+    
+    <div class="browser" inert>
+        <div class="topbar">
+            <div class="windowbuttons">
+                <button class="close"></button>
+                <button class="minimize"></button>
+                <button class="maximize"></button>
+            </div>
+            <div class="tabbar">
+                <a class="tab active" href="#" data-page="bram.us" data-url="https://www.bram.us/">
+                    <span class="title">Bram.us</span>
+                    <button class="close">&times;</button>
+                </a>
+                <a class="tab" href="#" data-page="other.site" data-url="https://www.other.site/">
+                    <span class="title">Other.site</span>
+                    <button class="close">&times;</button>
+                </a>
+            </div>
+        </div>
+        <div class="toolbar">
+            <button>←</button>
+            <button>→</button>
+            <button>⤾</button>
+            <input class="omnibox" type="text" value="https://www.bram.us/" readonly />
+            <button id="togglebutton">
+                <span data-show-when="light">🌕</span>
+                <span data-show-when="dark">🌑</span>
+            </button>
+        </div>
+        <div class="page active" data-page="bram.us">
+            <h1>Welcome to Bram.us!</h1>
+        </div>
+        <div class="page" data-page="other.site">
+            <h1>Welcome to Other.Site</h1>
+        </div>
+    </div>
+    <footer>
+        <p>Demo for <a href="https://brm.us/browser-dark-mode-toggle" target="_top">https://brm.us/browser-dark-mode-toggle</a></p>
+    </footer>
+    <script>
+    document.querySelector('form').addEventListener('submit', (e) => {
+      e.preventDefault();
+    });
+
+    const $osSetting = document.querySelector('#os');
+    const $browserSetting = document.querySelector('#browser');
+    const $siteSetting = document.querySelector('#website');
+
+    let activeSite = 'bram.us';
+    const siteSettings = {
+        'bram.us': 'inherit',
+        'other.site': 'inherit',
+    };
+
+    const getThemeToApplyOnSite = () => {
+      if (['light', 'dark'].includes(siteSettings[activeSite])) {
+        return siteSettings[activeSite];
+      }
+
+      if (['light', 'dark'].includes($browserSetting.value)) {
+        return $browserSetting.value;
+      }
+      
+      return $osSetting.value;
+    }
+
+    const getThemeToApplyOnBrowserUI = () => {
+      const $osSetting = document.querySelector('#os');
+      return $osSetting.value;
+    }
+
+    const $browser = document.querySelector('.browser');
+    const syncSettings = () => {
+      $browser.setAttribute('data-browser-theme', getThemeToApplyOnBrowserUI());
+      $browser.setAttribute('data-website-theme', getThemeToApplyOnSite());
+    }
+
+    window.addEventListener('load', (e) => {
+      syncSettings();
+    });
+
+    $siteSetting.addEventListener('change', (e) => {
+        siteSettings[activeSite] = $siteSetting.value;
+    });
+
+    document.querySelectorAll('select').forEach(($dropdown) => {
+      $dropdown.addEventListener('change', (e) => {
+        syncSettings();
+      });
+    });
+
+    document.querySelectorAll('.tab').forEach(($tab) => {
+        $tab.addEventListener('click', (e) => {
+            // Deactivate current tab
+        console.log('111111111111111')
+            document.querySelector('.tab.active').classList.remove('active');
+            document.querySelector('.page.active').classList.remove('active');
+
+            // Activate tab and page for new site
+            activeSite = e.currentTarget.getAttribute('data-page');
+            document.querySelector(`.tab[data-page="${activeSite}"]`).classList.add('active');
+            document.querySelector(`.page[data-page="${activeSite}"]`).classList.add('active');
+
+            // Update site dropdown to use stored value
+            $siteSetting.value = siteSettings[activeSite];
+
+            // Update URLbar
+            document.querySelector('.toolbar input').value = e.currentTarget.getAttribute('data-url');
+
+            // Rerender
+            syncSettings();
+        });
+    });
+  </script>
+</body>
+</html>

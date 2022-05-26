@@ -1,0 +1,209 @@
+:root {
+    color-scheme: light; /* This demo page itself only light for demonstration purposes */
+}
+
+body {
+    display: grid;
+    place-content: center;
+    gap: 2em;
+	margin-top: 2em;
+}
+
+.browser[data-browser-theme="light"] {
+	--topbar-background: #DFE1E5;
+	--tabbar-tab-active-background: white;
+	--tabbar-tab-active-foreground: black;
+	--tabbar-tab-hover-background: #EBECEF;
+	--toolbar-background: var(--tabbar-tab-active-background);
+	--toolbar-foreground: var(--tabbar-tab-active-foreground);
+	--toolbar-button-hover-background: #ECEDEF;
+	--omnibox-background: #ECEDEF;
+	--omnibox-foreground: black;
+}
+.browser[data-browser-theme="dark"] {
+	--topbar-background: #202325;
+	--tabbar-tab-active-background: #323639;
+	--tabbar-tab-active-foreground: #EDEDED;
+	--tabbar-tab-hover-background: #323639;
+	--toolbar-background: var(--tabbar-tab-active-background);
+	--toolbar-foreground: var(--tabbar-tab-active-foreground);
+	--toolbar-button-hover-background: #282C2F;
+	--omnibox-background: #282C2F;
+	--omnibox-foreground: #EDEDED;
+}
+
+.browser[data-website-theme="light"] {
+	--website-main: black;
+	--website-background: white;
+}
+.browser[data-website-theme="dark"] {
+	--website-main: white;
+	--website-background: #222;
+}
+
+.browser button {
+    border: none;
+	display: block;
+	width: 2em;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: transparent;
+	color: inherit;
+}
+
+.browser {
+    border-radius: 0.5em;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    min-height: 10em;
+    min-width: 25em;
+	height:  20em;
+	width: 35em;
+    overflow: hidden;
+	
+	/* Nice Shadow: https://www.joshwcomeau.com/css/designing-shadows/ */
+    box-shadow:
+      0 1px 1px hsl(0deg 0% 0% / 0.075),
+      0 2px 2px hsl(0deg 0% 0% / 0.075),
+      0 4px 4px hsl(0deg 0% 0% / 0.075),
+      0 8px 8px hsl(0deg 0% 0% / 0.075),
+      0 16px 16px hsl(0deg 0% 0% / 0.075)
+    ;
+	
+	resize: both;
+}
+
+.topbar, .toolbar {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	user-select: none;
+}
+
+input {
+    font-family: inherit;
+}
+
+.topbar {
+    display: flex;
+    gap: 1em;
+    padding: 0 1em;
+    background-color: var(--topbar-background);
+}
+
+.windowbuttons {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+
+.windowbuttons button {
+	width: 1em;
+}
+
+.windowbuttons button.close {
+    background: #EC6A5E;
+}
+.windowbuttons button.minimize {
+    background: #F4BF4F;
+}
+.windowbuttons button.maximize {
+    background: #61C454;
+}
+
+.tabbar {
+    flex: 1;
+    display: flex;
+    gap: 0.25em;
+}
+
+.tabbar .tab {
+    align-self: flex-end;
+    padding: 0.25em 0.5em 0.25em 0.75em;
+    margin-top: 0.4em;
+    border-top-left-radius: 0.4em;
+    border-top-right-radius: 0.4em;
+
+    text-decoration: none;
+
+    min-width: 8em;
+    display: flex;
+	align-items: center;
+    justify-content: space-between;
+    color: var(--tabbar-tab-active-foreground);
+}
+
+.tabbar .tab:hover {
+    background: var(--tabbar-tab-hover-background);
+}
+
+.tabbar .tab.active {
+    background: var(--tabbar-tab-active-background);
+}
+
+.tabbar .tab .close:hover {
+    background: rgba(0 0 0 / 0.15);
+}
+
+.tabbar .tab .title {
+	font-size: 0.9em;
+}
+
+.toolbar {
+    display: flex;
+    gap: 0.25em;
+    padding: 0.25em 0.25em;
+    border-bottom: 1px solid rgba(0 0 0 / 0.25);
+	background: var(--toolbar-background);
+	color: var(--toolbar-foreground);
+}
+
+.toolbar button:hover {
+    background-color: var(--toolbar-button-hover-background);
+}
+
+.toolbar input {
+    flex: 1;
+    border: none;
+    background: var(--omnibox-background);
+	color: var(--omnibox-foreground);
+    border-radius: 10em;
+    padding: 0 1em;
+}
+
+.page {
+    padding: 1em;
+	color: var(--website-main);
+	background: var(--website-background);
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.page h1 {
+    margin: 0;
+    padding: 0;
+}
+
+fieldset {
+	display: grid;
+	gap: 0.5em;
+	grid-template-columns: 1fr 2fr;
+}
+
+footer {
+	text-align: center;
+}
+
+[data-show-when] {
+	display: none;
+}
+
+[data-website-theme="light"] [data-show-when="light"],
+[data-website-theme="dark"] [data-show-when="dark"] {
+	display: block;
+}
+
+footer {
+    font-style: italic;
+}

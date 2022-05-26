@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html {
+      color-scheme: light dark;
+    }
+
+    /* 根据系统配置控制 Mode (System Preference) */
+    @media(prefers-color-scheme: dark) {
+      :root {
+        --primary-color: white;
+        --primary-background: black;
+      }
+    }
+
+    :root[data-force-color-scheme="light"] {
+      --primary-color: black;
+      --primary-background: white;    
+    }
+     /* Dark Color Scheme (Override) */
+    :root[data-force-color-scheme="dark"] {
+      --primary-color: white;
+      --primary-background: black;
+    }
+    body {
+      background: var(--primary-background);
+      color: var(--primary-color);
+    }
+
+  </style>
+</head>
+<body>
+
+  <p style="font-size: 50px;">测试段落</p>
+  <select name="color-scheme">
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+  </select>
+  <script>
+    
+    const select = document.querySelector('select');
+    select.addEventListener('change', function(e) {
+      document.documentElement.setAttribute('data-force-color-scheme', e.target.value);
+    });
+  </script>
+</body>
+</html>
