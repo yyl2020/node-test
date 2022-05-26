@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, assert } from 'vitest'
-import { add, sampleProvinceData, Province, statement, invoice, plays } from './index'
+import { sampleProvinceData, Province, statement, invoice, plays } from './index'
 // describe('suite', () => {
 //   it('add', () => {
 //       expect(add()).toBe(0)

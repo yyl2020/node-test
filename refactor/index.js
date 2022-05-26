@@ -29,7 +29,7 @@ export const plays = {
 export function statement(invoice, plays) {
     return renderPlainText(createStatementData(invoice, plays))
 }
-function renderPlainText(data, plays){
+function renderPlainText(data){
     let result = `Statement for ${data.customer}\n`;
     for (let perf of data.performances) {
         result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;

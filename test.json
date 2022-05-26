@@ -1,0 +1,17 @@
+{
+  "code": 1,
+  "empty": false,
+  "msg": "操作成功",
+  "result": {
+    "activeAlias": "updating",
+    "activeUrl": "https://cdn.xbongbong.com/xbbDingtalk/0/png/c78084aba883872011899743e8cf4047.png",
+    "close": false,
+    "coverPicture": "https://cdn.xbongbong.com/xbbDingtalk/0/png/c78084aba883872011899743e8cf4047.png",
+    "hasPop": true,
+    "html": "",
+    "id": 246,
+    "topShow": true
+  },
+  "success": true,
+  "totalCount": 1
+}

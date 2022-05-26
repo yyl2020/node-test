@@ -17,6 +17,7 @@
 </head>
 <body>
   <input type=text>
+  <a class="external" href=""></a>
   <script>
     const arr1 = []
     const t0 = window.performance.now();
@@ -25,6 +26,7 @@
     }
     const t1 = window.performance.now();
     console.log("循环执行了" + (t1 - t0) + "毫秒.")
+    
     const arr2 = []
     function hello (index){
       arr2.push(index)
@@ -35,8 +37,13 @@
     }
     const t3 = window.performance.now();
     console.log("hello函数执行了" + (t3 - t2) + "毫秒.")
-    
-
+    console.log(document.querySelectorAll('a.external'));
+    for (const elem of document.querySelectorAll('a.external')) {
+      const href = new URL(elem.href);
+      href.searchParams.set('utm_source', 'my-website');
+      console.log(href.toString())
+      elem.href = href.toString();
+    }
   </script>
 </body>
 </html>
