@@ -36,7 +36,7 @@ function getGitRepo(url) {
   const dir = path.join(process.cwd(), 'test-clone')
   const repo = new URL(url)
   console.log(repo.pathname.split('/')[2].split('.')[0]);
-  // git.clone({ fs, http, dir, url,onAuth }).then(console.log)
+  git.clone({ fs, http, dir, url,onAuth }).then(console.log)
 }
 
 // getGitRepo('http://192.168.10.6/xbongbong/xbb-pro-dingtalk-front.git')
@@ -143,14 +143,38 @@ function copyFile(source, destination){
 async function gitCheckout(dir, branch){
   console.log(dir, branch)
   NodeGit.Repository.open(dir).then(function (repo) {
-  console.log(repo, 'repo')
-  repo.checkoutBranch(branch).then(function() {
-  // method complete
-  console.log('repo checkout complete')
+      console.log(repo, 'repo')
+      repo.getBranch('refs/remotes/origin/' + branch)
+      .then(function(reference) {
+          //checkout branch
+          console.log(reference)
+          return repo.checkoutRef(reference);
+      }).then((res)=>{
+        console.log(res)
+        console.log('repo checkout complete')
+      })
+      // return repo.getCurrentBranch().then(function(ref) {
+      //   console.log("On " + ref.shorthand() + " " + ref.target());
 
-  });
-  // Inside of this function we have an open repo
-});
+      //   console.log("Checking out master");
+      //   var checkoutOpts = {
+      //     checkoutStrategy: NodeGit.Checkout.STRATEGY.FORCE
+      //   };
+      //   return repo.checkoutBranch(branch, checkoutOpts);
+      // }).then(function () {
+      //   return repo.getCurrentBranch().then(function(ref) {
+      //     console.log("On " + ref.shorthand() + " " + ref.target());
+      //   });
+      // });
+
+
+      // repo.checkoutBranch(branch).then(function() {
+      // // method complete
+      // console.log('repo checkout complete')
+
+      // });
+    // Inside of this function we have an open repo
+    })
   // await git.checkout({
   //   fs,
   //   dir,
@@ -160,4 +184,5 @@ async function gitCheckout(dir, branch){
 
 }
 const dir = path.join(process.cwd(), 'test-clone')
-gitCheckout(dir, 'master')
+// gitCheckout(dir, 'master')
+gitCheckout(dir, 'feature/private-deploy-v4.43.0')
