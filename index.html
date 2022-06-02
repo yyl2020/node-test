@@ -6,44 +6,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    input[value="a"] { background: url(https://example.com/?value=a); }
+    /* input[value="a"] { background: url(https://example.com/?value=a); }
     input[value="b"] { background: url(https://example.com/?value=b); }
     @font-face { font-family: x; src: url(https://example.com/?value=a), local(Impact); unicode-range: U+61; }
     @font-face { font-family: x; src: url(https://example.com/?value=b), local(Impact); unicode-range: U+62; }
     @font-face { font-family: x; src: url(https://example.com/?value=c), local(Impact); unicode-range: U+63; }
     @font-face { font-family: x; src: url(https://example.com/?value=d), local(Impact); unicode-range: U+64; }
-    input { font-family: x, 'Comic sans ms'; }
+    input { font-family: x, 'Comic sans ms'; } */
   </style>
 </head>
 <body>
   <input type=text>
+  <input type="file" accept="image/*;capture=camera">
+  <input type="file" accept="video/*;capture=camcorder">
+  <input type="file" accept="audio/*;capture=microphone">
   <a class="external" href=""></a>
+  <div id="result"></div>
   <script>
-    const arr1 = []
-    const t0 = window.performance.now();
-    for (let index = 0; index < 10000000; index++) {
-      arr1.push(index)
-    }
-    const t1 = window.performance.now();
-    console.log("循环执行了" + (t1 - t0) + "毫秒.")
+    const inputElement = document.querySelector('input[type=file]');
+    const result = document.getElementById('result');
+    inputElement.addEventListener('change', (event) => {
+      console.log(event);
+      const file = event.target.files[0];
+      const image = document.createElement('img');
+      image.src = URL.createObjectURL(file);
+      result.appendChild(image);
+    });
+    // const arr1 = []
+    // const t0 = window.performance.now();
+    // for (let index = 0; index < 10000000; index++) {
+    //   arr1.push(index)
+    // }
+    // const t1 = window.performance.now();
+    // console.log("循环执行了" + (t1 - t0) + "毫秒.")
     
-    const arr2 = []
-    function hello (index){
-      arr2.push(index)
-    }
-    const t2 = window.performance.now();
-    for (let index = 0; index < 10000000; index++) {
-      hello(index)
-    }
-    const t3 = window.performance.now();
-    console.log("hello函数执行了" + (t3 - t2) + "毫秒.")
-    console.log(document.querySelectorAll('a.external'));
-    for (const elem of document.querySelectorAll('a.external')) {
-      const href = new URL(elem.href);
-      href.searchParams.set('utm_source', 'my-website');
-      console.log(href.toString())
-      elem.href = href.toString();
-    }
+    // const arr2 = []
+    // function hello (index){
+    //   arr2.push(index)
+    // }
+    // const t2 = window.performance.now();
+    // for (let index = 0; index < 10000000; index++) {
+    //   hello(index)
+    // }
+    // const t3 = window.performance.now();
+    // console.log("hello函数执行了" + (t3 - t2) + "毫秒.")
+    // console.log(document.querySelectorAll('a.external'));
+    // for (const elem of document.querySelectorAll('a.external')) {
+    //   const href = new URL(elem.href);
+    //   href.searchParams.set('utm_source', 'my-website');
+    //   console.log(href.toString())
+    //   elem.href = href.toString();
+    // }
   </script>
 </body>
 </html>
