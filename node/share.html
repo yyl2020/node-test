@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="share-button">Share me</button>
+<script>
+    const shareButton = document.getElementById("share-button");
+
+    shareButton.addEventListener("click", (event) => {
+        // 兼容性比较差
+        // https://daily-dev-tips.com/posts/using-the-native-web-share-javascript-api/
+        if ("share" in navigator) {
+            navigator
+                .share({
+                    title: "Look at this native web share",
+                    url:
+                        "https://daily-dev-tips.com/posts/using-the-native-web-share-javascript-api/"
+                })
+                .then(() => {
+                    console.log("Callback after sharing");
+                })
+                .catch(console.error);
+        } else {
+            alert(`Sorry this browser doesn't have native share`)
+        }
+    });
+</script>
+</body>
+</html>
